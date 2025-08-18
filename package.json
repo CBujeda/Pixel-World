@@ -1,0 +1,23 @@
+{
+  "name": "pixel-world",
+  "version": "1.0.0",
+  "description": "Private server of Pixel Wold (clone of wplace.live)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CBujeda/Pixel-World.git"
+  },
+  "author": "Clara Bujeda Muñoz",
+  "license": "SEE LICENSE IN LICENSE.txt",
+  "bugs": {
+    "url": "https://github.com/CBujeda/Pixel-World/issues"
+  },
+  "homepage": "https://github.com/CBujeda/Pixel-World#readme",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.1.0"
+  }
+}
