@@ -1,0 +1,13 @@
+{
+    "db": {
+      "type": "sqlite",
+      "sqlitePath": "./database.sqlite",
+      "mysql": {
+        "host": "localhost",
+        "user": "root",
+        "password": "tu_password",
+        "database": "wplace"
+      }
+    },
+    "registrationMode": "public"
+  }
