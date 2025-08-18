@@ -4,7 +4,7 @@
   "description": "Private server of Pixel Wold (clone of wplace.live)",
   "main": "index.js",
   "scripts": {
-    "start":"node src/app.js",
+    "start": "node src/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -20,6 +20,7 @@
   "dependencies": {
     "ejs": "^3.1.10",
     "express": "^5.1.0",
+    "express-session": "^1.18.2",
     "mysql2": "^3.14.3",
     "sqlite3": "^5.1.7"
   }

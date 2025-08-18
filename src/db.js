@@ -18,16 +18,6 @@ function connectToDatabase() {
         console.log('Conexión a SQLite exitosa.');
       }
     });
-  } else if (config.db.type === 'mysql') {  // En caso de ser MySQL
-    console.log('Conectando a la base de datos MySQL...');
-    db = mysql.createConnection(config.db.mysql);
-    db.connect(err => {
-      if (err) {
-        console.error('Error al conectar a MySQL:', err.stack);
-        return;
-      }
-      console.log('Conexión a MySQL exitosa como id ' + db.threadId);
-    });
   } else {
     console.error('Tipo de base de datos no válido en el archivo de configuración.');
     process.exit(1);
@@ -41,6 +31,36 @@ function getDatabase() {
   return db;
 }
 
+/**
+ * 
+ * 
+ */
+function initTables() {
+  const dbInstance = getDatabase();
+
+  if (config.db.type === 'sqlite') {
+    dbInstance.serialize(() => {
+      /**
+       * Creamos la tabla de usuarios Usuario:
+       *  - id: Identificador único del usuario.
+       *  - username: Nombre de usuario único.
+       *  - password_hash: Contraseña del usuario en formato hash.
+       *  - created_at: Fecha de creación del usuario.
+       */
+      dbInstance.run(`
+        CREATE TABLE IF NOT EXISTS users (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          username TEXT NOT NULL UNIQUE,
+          password_hash TEXT NOT NULL,
+          created_at TEXT NOT NULL
+        )
+      `);
+      console.log('Tablas de SQLite creadas o ya existentes.');
+    });
+  } 
+}
+
 module.exports = {
-  getDatabase
+  getDatabase,
+  initTables
 };

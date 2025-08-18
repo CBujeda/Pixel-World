@@ -1,27 +1,28 @@
+/**
+ *  PIXEL WORLD 
+ * 
+ */
 const express = require('express');
-const path = require('path');
-const config = require('./config');
-const { getDatabase } = require('./db');
-const app = express();
-const PORT = process.env.PORT || 3000;
+const session = require('express-session')
+app = express();
+const PORT = 3000;
 
-// Configurar EJS como motor de plantillas
-app.set('view engine', 'ejs');
-app.set('views', path.join(__dirname, '../views'));
 
-// Servir archivos estáticos desde la carpeta 'public'
-app.use(express.static(path.join(__dirname, '../public')));
+app.use(express.json());
 
-// Ruta principal para renderizar la vista de inicio
-app.get('/', (req, res) => {
-    res.render('index', { registrationMode: config.registrationMode });
-});
+app.use(session({
+    secret: "bc834b1c0618f8e7abf7c34978c94522",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+        httpOnly:true,
+        secure:false,
+        maxAge: 1000 * 60 * 10
+    }
+}));
 
-// Iniciar la conexión a la base de datos y luego el servidor
-getDatabase();
+const auth = require('./routes/auth.js')(app);
 
-// Iniciar el servidor
-app.listen(PORT, () => {
-    console.log(`Servidor escuchando en http://localhost:${PORT}`);
-    console.log(`Modo de registro: ${config.registrationMode}`);
-});
+app.listen(PORT,()=>
+    console.log(`Server de PIXEL WORLD localhost:${PORT}`)
+);
