@@ -18,6 +18,8 @@
   },
   "homepage": "https://github.com/CBujeda/Pixel-World#readme",
   "dependencies": {
+    "crypto": "^1.0.1",
+    "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",

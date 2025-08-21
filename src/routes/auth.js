@@ -2,6 +2,8 @@ const users = [
     { id: 1, email: "clara@example.com", password: "1234" }
 ];
 
+const encriptacion = require('../utils/crypt.js');
+
 module.exports = function(app) {
     console.log("Registrando sistema de auth")
 
@@ -12,19 +14,31 @@ module.exports = function(app) {
         if(!user){
             return res.status(401).json({error: "Credenciales Invalidas"})
         }
-        req.session.userId = user.id;
 
+        const privData = {
+            email:user.email,
+            roles:["user"],
+            loginAt: Date.now()
+        };
+        req.session.priv = encriptacion.encryptForUser(user.id,privData);
+        req.session.userId = user.id; 
+        
         res.json({ok:true, msg: "Sesion Iniciada"})
 
-    })
+    });
 
     // Ruta protegida
     app.get('/me',(req,res) =>{
         if(!req.session.userId){
             return res.status(401).json({error: "No autenticado"});
         }
+        
+        let claims = null;
+        if(req.session.priv){
+            claims = encriptacion.decryptForUser(req.session.userId,req.session.priv);
+        }
 
-        res.json({msg: "Estas logueada",userId: req.session.userId});
+        res.json({userId: req.session.userId,claims});
     });
 
     app.post('/logout',(req,res)=>{
