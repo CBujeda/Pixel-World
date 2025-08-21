@@ -12,7 +12,7 @@ const PORT = 3000;
 app.use(express.json());
 
 app.use(session({
-    secret: "bc834b1c0618f8e7abf7c34978c94522",
+    secret: process.env.SESSION_SECRET,
     resave: false,
     saveUninitialized: false,
     cookie: {

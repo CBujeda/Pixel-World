@@ -7,8 +7,13 @@ const crypto = require('crypto');
  * CAMBIAR -> Recoger de un .env
  * ----------------------------
  */
-const MASTER_KEY = 'supersecreto32bytes1234567890123';
+const MASTER_KEY = Buffer.from(process.env.MASTER_KEY, "utf8"); // 32 bytes (256 bits) de clave maestra, la cual se usará para derivar claves únicas por usuario
 
+/*
+function deriveKey(userId) {
+    return crypto.scryptSync(userId, MASTER_KEY, 32); // Derivamos una clave única para cada usuario usando scrypt
+}
+*/
 
 /**
  * Funcion la cual deriv a una clave unica por usuario.
