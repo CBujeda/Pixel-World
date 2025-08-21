@@ -39,6 +39,7 @@ Accede a http://localhost:3000 en tu navegador para comenzar
 ## Licencia
 
 Este proyecto está bajo la licencia MIT.
+[Consulta la traducción de la licencia aquí.](https://github.com/CBujeda/Pixel-World/tree/main/doc/LICENSE)
 ```
 Licencia MIT
 
