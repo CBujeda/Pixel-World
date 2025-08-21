@@ -2,11 +2,15 @@
  *  PIXEL WORLD 
  * 
  */
+console.log(
+"  _                                  \n"+
+" |_) o     _  |   \\    / _  ._ |  _| \n"+
+" |   | >< (/_ |    \\/\\/ (_) |  | (_|  v1.0.0 \n");
 require("dotenv").config();
 const express = require('express');
 const session = require('express-session')
 app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 
 app.use(express.json());

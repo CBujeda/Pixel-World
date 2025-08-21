@@ -4,6 +4,7 @@
   "description": "Private server of Pixel Wold (clone of wplace.live)",
   "main": "index.js",
   "scripts": {
+    "dev": "node src/app.js",
     "start": "node src/app.js",
     "generate-env": "node src/utils/genenv.js",
     "test": "echo \"Error: no test specified\" && exit 1"
