@@ -1,6 +1,7 @@
 # Pixel-World
 Private server of Pixel Wold (clone of wplace.live)
 
+Estado: En desarollo
 
 ## Instalación
 
