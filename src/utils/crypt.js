@@ -3,11 +3,19 @@ const crypto = require('crypto');
 
 /**
  * Clave maestra del servidor, En futuro lo almacenaremos en un .ENV
- * ----------------------------
- * CAMBIAR -> Recoger de un .env
- * ----------------------------
+ *  32 bytes (256 bits) de clave maestra, la cual se usará para derivar claves únicas por usuario
  */
-const MASTER_KEY = Buffer.from(process.env.MASTER_KEY, "utf8"); // 32 bytes (256 bits) de clave maestra, la cual se usará para derivar claves únicas por usuario
+let MASTER_KEY;
+if(process.env.MASTER_KEY){
+    MASTER_KEY = Buffer.from(process.env.MASTER_KEY, "hex"); 
+} else {
+    throw new Error("Falta variable de entorno MASTER_KEY");
+}
+console.log("Clave maestra de longitud: ", MASTER_KEY.length);
+if(MASTER_KEY.length !== 32){
+    throw new Error("La clave maestra debe tener 32 bytes (256 bits) de longitud");
+}
+
 
 /*
 function deriveKey(userId) {
