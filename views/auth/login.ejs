@@ -1,1 +1,10 @@
 <h1>Login</h1>
+<form method="POST" action="/login">
+  <input type="email" name="email" placeholder="Email" required />
+  <input type="password" name="password" placeholder="Contraseña" required />
+  <button type="submit">Entrar</button>
+</form>
+<% if (typeof error !== 'undefined') { %>
+  <p style="color:red"><%= error %></p>
+<% } %>
+<a href="/register">Registrarse</a>

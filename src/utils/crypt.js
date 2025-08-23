@@ -11,9 +11,11 @@ if(process.env.MASTER_KEY){
 } else {
     throw new Error("Falta variable de entorno MASTER_KEY");
 }
-console.log("Clave maestra de longitud: ", MASTER_KEY.length);
+
 if(MASTER_KEY.length !== 32){
-    throw new Error("La clave maestra debe tener 32 bytes (256 bits) de longitud");
+    throw new Error("La clave maestra debe tener 32 bytes (256 bits) de longitud, " + "tiene" + MASTER_KEY.length);
+}else{
+    console.log("MASTER_KEY configurada correctamente")
 }
 
 

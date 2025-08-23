@@ -19,6 +19,8 @@ app.set("views", path.join(__dirname, "..", "views"));
 
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 16) {
     throw new Error("SESSION_SECRET inválido: debe existir y tener al menos 16 caracteres");
+}else{
+    console.log("SESSION_SECRET configurado correctamente")
 }
 app.use(session({
     secret: process.env.SESSION_SECRET,
