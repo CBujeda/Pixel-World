@@ -17,12 +17,6 @@ if(MASTER_KEY.length !== 32){
 }
 
 
-/*
-function deriveKey(userId) {
-    return crypto.scryptSync(userId, MASTER_KEY, 32); // Derivamos una clave única para cada usuario usando scrypt
-}
-*/
-
 /**
  * Funcion la cual deriv a una clave unica por usuario.
  * Usamos HKDF como algoritmo de derivación de claves

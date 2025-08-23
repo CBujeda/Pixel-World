@@ -7,6 +7,19 @@ const encriptacion = require('../utils/crypt.js');
 module.exports = function(app) {
     console.log("Registrando sistema de auth")
 
+    /**
+     * Rutas de autenticación
+     */
+    // Panel auth login
+    app.get("/login",(req,res)=>{
+        res.render("auth/login");
+    });
+
+    app.get("/register",(req,res)=>{
+        res.render("auth/register");
+    });
+
+    // Procesar login
     app.post('/login',(req,res) =>{
         const {email,password} = req.body;
         const user = users.find(u => u.email === email && u.password === password);
@@ -47,4 +60,6 @@ module.exports = function(app) {
             res.json({ok:true,msg:"Sesion Cerrada"})
         })
     })
+
+
 }
