@@ -1,5 +1,8 @@
 
 const crypto = require('crypto');
+const bcrypt = require('bcrypt')
+
+const SALT_ROUNDS = process.env.SALT_ROUNDS || 12;
 
 /**
  * Clave maestra del servidor, En futuro lo almacenaremos en un .ENV
@@ -75,9 +78,20 @@ function decryptForUser (userId, payload){
     return JSON.parse(plaintext.toString('utf8'))                               //Devolvemos el objeto JSON original
 }
 
+function hashPassword(password) {
+    return bcrypt.hash(password,SALT_ROUNDS)
+}
+
+function comparePassword(password,hash){
+    return bcrypt.compare(password,hash);
+}
+
 
 module.exports = {
     deriveUserKey,
     encryptForUser,
-    decryptForUser
+    decryptForUser,
+
+    hashPassword,
+    comparePassword
 }
