@@ -33,6 +33,21 @@
     <main>
         <div id="map-container">
             <div class="floating-menu">
+                <!--Menu Izquierda-->
+                <div class="">
+                    <a>Info</a>
+                    <button class="zoom-btn" id="zoom-in">+</button>
+                    <button class="zoom-btn zoom-out-btn" id="zoom-out">-</button>
+                </div>
+                
+                <!--Menu Derecha-->
+                <div>
+                    <a href="/me">
+                        <img src="https://placehold.co/32x32/D4A373/8B0000?text=User">    
+                        My User
+                    </a>
+
+                </div>
                 Boton 1
 
                 Boton 2
@@ -73,6 +88,13 @@
                     attributionControl: false,
                     zoom: 3
                 });
+
+                document.getElementById('zoom-in').onclick = function() {
+                    map.zoomIn();
+                };
+                document.getElementById('zoom-out').onclick = function() {
+                    map.zoomOut();
+                };
                 </script>
         </div>
     </main>
