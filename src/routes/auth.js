@@ -4,7 +4,7 @@ const users = [
 
 const encriptacion = require('../utils/crypt.js');
 
-module.exports = function(app) {
+module.exports = function(app,user) {
     console.log("Registrando sistema de auth")
 
     /**
@@ -15,8 +15,22 @@ module.exports = function(app) {
         res.render("auth/login");
     });
 
+
+
+
     app.get("/register",(req,res)=>{
         res.render("auth/register");
+    });
+
+    app.post("/register_post",(req,res)=>{
+        const {email, password, confirm_password} = req.body;
+        console.log("Se llamo a registro");
+        if(password !== confirm_password){
+            res.render("auth/register",{error:"Differents passwords"});
+            console.log("error")
+        }
+        user.createUser(email,password);
+
     });
 
     // Procesar login

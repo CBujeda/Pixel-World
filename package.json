@@ -4,7 +4,7 @@
   "description": "Private server of Pixel Wold (clone of wplace.live)",
   "main": "index.js",
   "scripts": {
-    "dev": "node src/app.js",
+    "dev": "nodemon src/app.js",
     "start": "node src/app.js",
     "generate-env": "node src/utils/genenv.js",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -20,12 +20,14 @@
   },
   "homepage": "https://github.com/CBujeda/Pixel-World#readme",
   "dependencies": {
+    "bcrypt": "^6.0.0",
     "crypto": "^1.0.1",
     "dotenv": "^17.2.1",
     "ejs": "^3.1.10",
     "express": "^5.1.0",
     "express-session": "^1.18.2",
     "mysql2": "^3.14.3",
+    "nodemon": "^3.1.10",
     "sqlite3": "^5.1.7"
   }
 }

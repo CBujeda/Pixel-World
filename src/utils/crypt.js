@@ -2,7 +2,7 @@
 const crypto = require('crypto');
 const bcrypt = require('bcrypt')
 
-const SALT_ROUNDS = process.env.SALT_ROUNDS || 12;
+const SALT_ROUNDS = Number(process.env.SALT_ROUNDS) || 12;
 
 /**
  * Clave maestra del servidor, En futuro lo almacenaremos en un .ENV
@@ -83,8 +83,8 @@ function decryptForUser (userId, payload){
  * @param {*} password 
  * @returns 
  */
-function hashPassword(password) {
-    return bcrypt.hash(password,SALT_ROUNDS)
+async function hashPassword(password) {
+    return await bcrypt.hash(password,SALT_ROUNDS)
 }
 
 /**
@@ -93,8 +93,8 @@ function hashPassword(password) {
  * @param {*} hash 
  * @returns 
  */
-function comparePassword(password,hash){
-    return bcrypt.compare(password,hash);
+async function comparePassword(password,hash){
+    return await bcrypt.compare(password,hash);
 }
 
 

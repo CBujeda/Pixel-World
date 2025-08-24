@@ -15,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "..", "views"));
+app.use(express.urlencoded({ extended: true }));
+const db = require('./db.js');
+db.initTables();
 /*========================== SESSION ========================== */
 
 if (!process.env.SESSION_SECRET || process.env.SESSION_SECRET.length < 16) {
@@ -35,8 +38,8 @@ app.use(session({
 
 /*============================================================== */
 /*=========================== ROUTES =========================== */
-
-const auth = require('./routes/auth.js')(app);
+const user = require('./models/user.js')(db);
+const auth = require('./routes/auth.js')(app,user);
 
 app.listen(PORT,()=>
     console.log(`Server de PIXEL WORLD localhost:${PORT}`)

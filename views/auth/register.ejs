@@ -1,7 +1,11 @@
+<!DOCTYPE html>
+
 <h1>Registro</h1>
-<form method="POST" action="/register">
-  <input type="email" name="email" placeholder="Email" required />
-  <input type="password" name="password" placeholder="Contraseña" required />
+<form method="POST" action="/register_post">
+  <input type="email" name="email" placeholder="Email" required />  <br>
+  <input type="password" name="password" placeholder="Contraseña" required /> <br>
+  <input type="password" name="confirm_password" placeholder="Confirmar contraseña" required /> <br>
+
   <button type="submit">Registrarse</button>
 </form>
 <% if (typeof error !== 'undefined') { %>
