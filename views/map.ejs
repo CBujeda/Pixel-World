@@ -7,27 +7,75 @@
 
     <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
     <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
-
+    <style>
+        html,body{
+            padding: 0px;
+            margin: 0px;
+        }
+        #map-container {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+        }
+        #map {
+            position: absolute;
+            top: 0; bottom: 0; left: 0; right: 0;
+            width: 100%;
+            height: 100%;
+        }
+        .floating-menu {
+            position: absolute;
+            z-index: 10;
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Pixel World Map</h1>
-    </header>
     <main>
         <div id="map-container">
-            <div id='map' style='width: 400px; height: 300px;'></div>
+            <div class="floating-menu">
+                Boton 1
+
+                Boton 2
+
+                Login
+                User
+
+            
+                    &copy; 2025 Pixel World
+            </div>
+            <div id='map'></div>   <!--style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'-->
             <script>
-            var map = new maplibregl.Map({
-            container: 'map',
-            style: 'https://demotiles.maplibre.org/style.json', // stylesheet location
-            center: [-74.5, 40], // starting position [lng, lat]
-            zoom: 9 // starting zoom
-            });
-            </script>
+                var osmStyle = {
+                    "version": 8,
+                    "sources": {
+                        "osm": {
+                            "type": "raster",
+                            "tiles": [
+                                "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
+                            ],
+                            "tileSize": 256,
+                            "attribution": "© OpenStreetMap contributors"
+                        }
+                    },
+                    "layers": [
+                        {
+                            "id": "osm",
+                            "type": "raster",
+                            "source": "osm"
+                        }
+                    ]
+                };
+                
+                var map = new maplibregl.Map({
+                    container: 'map',
+                    style: osmStyle,
+                    center: [0, 35],
+                    attributionControl: false,
+                    zoom: 3
+                });
+                </script>
         </div>
     </main>
-    <footer>
-        <p>&copy; 2025 Pixel World</p>
-    </footer>
+
 </body>
 </html>
