@@ -50,7 +50,10 @@ function initTables() {
       dbInstance.run(`
           CREATE TABLE IF NOT EXISTS users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
+            user_code TEXT UNIQUE,
+            user TEXT,
             email TEXT UNIQUE,
+            rol TEXT DEFAULT 'user',
             password TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )

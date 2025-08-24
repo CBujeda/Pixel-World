@@ -83,7 +83,7 @@ function decryptForUser (userId, payload){
  * @param {*} password 
  * @returns 
  */
-async function hashPassword(password) {
+async function hashGen(password) {
     return await bcrypt.hash(password,SALT_ROUNDS)
 }
 
@@ -103,6 +103,6 @@ module.exports = {
     encryptForUser,
     decryptForUser,
 
-    hashPassword,
+    hashGen,
     comparePassword
 }
