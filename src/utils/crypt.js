@@ -78,10 +78,21 @@ function decryptForUser (userId, payload){
     return JSON.parse(plaintext.toString('utf8'))                               //Devolvemos el objeto JSON original
 }
 
+/**
+ * Sistema el cual hashea la contraseña
+ * @param {*} password 
+ * @returns 
+ */
 function hashPassword(password) {
     return bcrypt.hash(password,SALT_ROUNDS)
 }
 
+/**
+ * Sistema el cual compara la contraseña con una hasheada
+ * @param {*} password 
+ * @param {*} hash 
+ * @returns 
+ */
 function comparePassword(password,hash){
     return bcrypt.compare(password,hash);
 }
