@@ -1,7 +1,13 @@
 # Pixel-World
+
+<div align="center">
+    <img src="doc/world_pixel_icon.png" alt="Pixel World Icon" width="200" style="image-rendering: pixelated;">
+</div>
+
+
 Private server of Pixel Wold (clone of wplace.live)
 
-Estado: En desarollo
+Estado: En desarolslo
 
 ## Instalación
 
