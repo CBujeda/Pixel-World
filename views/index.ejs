@@ -3,11 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WPlace Clone</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <title>PIXEL WORLD - Real-time Pixel World</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #0d0d12;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        
+        /* Premium Background Gradients */
+        .bg-blob {
+            position: absolute;
+            width: 600px;
+            height: 600px;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.5;
+            z-index: -1;
+            animation: float 20s infinite ease-in-out alternate;
+        }
+        .blob-1 { background: radial-gradient(circle, rgba(255,0,127,0.4) 0%, rgba(127,0,255,0) 70%); top: -100px; left: -100px; }
+        .blob-2 { background: radial-gradient(circle, rgba(0,127,255,0.4) 0%, rgba(0,255,127,0) 70%); bottom: -100px; right: -100px; animation-delay: -10s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(50px, 50px) scale(1.1); }
+        }
+
+        /* Navbar */
+        nav {
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ff007f, #7f00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+        .nav-links a {
+            color: #e2e2e2;
+            text-decoration: none;
+            margin-left: 30px;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+        .nav-links a:hover { color: #fff; }
+
+        /* Hero */
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 0 20px;
+        }
+        h1 {
+            font-size: 80px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            letter-spacing: -3px;
+        }
+        .text-gradient {
+            background: linear-gradient(90deg, #ff007f, #00d2ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        p {
+            font-size: 20px;
+            color: #a0a0b0;
+            max-width: 600px;
+            margin-bottom: 40px;
+            line-height: 1.5;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 20px;
+        }
+        .btn {
+            padding: 16px 40px;
+            border-radius: 30px;
+            font-size: 18px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: none;
+            cursor: pointer;
+        }
+        .btn-primary {
+            background: linear-gradient(90deg, #ff007f, #7f00ff);
+            color: white;
+            box-shadow: 0 10px 30px rgba(255, 0, 127, 0.3);
+        }
+        .btn-primary:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(255, 0, 127, 0.5);
+        }
+        .btn-secondary {
+            background: rgba(255,255,255,0.05);
+            color: #fff;
+            border: 1px solid rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+        }
+        .btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+            transform: translateY(-3px);
+        }
+
+    </style>
 </head>
 <body>
-    <h1>¡Bienvenido a WPlace Clone!</h1>
-    <p>La configuración básica de Node.js, Express y EJS está funcionando correctamente.</p>
+    <div class="bg-blob blob-1"></div>
+    <div class="bg-blob blob-2"></div>
+
+    <nav>
+        <div class="logo">PIXEL WORLD</div>
+        <div class="nav-links">
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        </div>
+    </nav>
+
+    <main>
+        <h1>Leave your mark<br>on the <span class="text-gradient">World</span>.</h1>
+        <p>A completely free, open-source collaborative canvas mapped to the real globe. Join thousands of users in shaping our planet pixel by pixel.</p>
+        <div class="btn-group">
+            <a href="/map" class="btn btn-primary">Open Canvas</a>
+            <a href="/register" class="btn btn-secondary">Create Account</a>
+        </div>
+    </main>
+
 </body>
 </html>

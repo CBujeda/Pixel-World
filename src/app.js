@@ -15,7 +15,12 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.set("view engine","ejs");
 app.set("views", path.join(__dirname, "..", "views"));
+app.use(express.static(path.join(__dirname, "..", "public")));
 app.use(express.urlencoded({ extended: true }));
+
+app.get("/", (req, res) => {
+    res.render("index");
+});
 const db = require('./db.js');
 db.initTables();
 /*========================== SESSION ========================== */
@@ -38,9 +43,19 @@ app.use(session({
 
 /*============================================================== */
 /*=========================== ROUTES =========================== */
-const user = require('./models/user.js')(db);
-const auth = require('./routes/auth.js')(app,user);
+const settingsModel = require('./models/settings.js')(db);
+const userModel = require('./models/user.js')(db);
 
-app.listen(PORT,()=>
+const auth = require('./routes/auth.js')(app, userModel, settingsModel);
+const admin = require('./routes/admin.js')(app, userModel, settingsModel);
+
+// Crear servidor HTTP explícito para acoplar WebSocket
+const http = require('http');
+const server = http.createServer(app);
+
+// Iniciar WebSockets
+require('./sockets.js')(server, db);
+
+server.listen(PORT, () =>
     console.log(`Server de PIXEL WORLD localhost:${PORT}`)
 );

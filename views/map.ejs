@@ -4,13 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pixel World Map</title>
-
-    <link href='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css' rel='stylesheet' />
-    <script src='https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.js'></script>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="/dist/leaflet.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <!-- Leaflet JS -->
+    <script src="/dist/leaflet.js"></script>
     <style>
-        html,body{
-            padding: 0px;
-            margin: 0px;
+        * { box-sizing: border-box; }
+        html, body {
+            padding: 0;
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: #f4f4f8;
+            color: #2b2b36;
+            overflow: hidden;
         }
         #map-container {
             position: relative;
@@ -18,86 +25,411 @@
             height: 100vh;
         }
         #map {
-            position: absolute;
-            top: 0; bottom: 0; left: 0; right: 0;
             width: 100%;
             height: 100%;
+            z-index: 1;
+            /* Filter removed for clear map theme */
         }
         .floating-menu {
             position: absolute;
-            z-index: 10;
+            z-index: 1000;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            pointer-events: none;
+            align-items: flex-start;
+        }
+        .menu-left, .menu-right {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            padding: 12px 20px;
+            border-radius: 16px;
+            pointer-events: auto;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .menu-right {
+            align-items: flex-end;
+            gap: 10px;
+        }
+        .brand {
+            font-size: 18px;
+            font-weight: 800;
+            background: linear-gradient(90deg, #ff007f, #7f00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 0;
+        }
+        a, button {
+            color: #2b2b36;
+            text-decoration: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        a:hover, button:hover {
+            opacity: 0.7;
+            transform: translateY(-1px);
+        }
+        
+        /* Controles de Dibujo */
+        .controls-row {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .draw-toggle {
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: #e6e6ef;
+            color: #2b2b36;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .draw-toggle.active {
+            background: #ff007f;
+            color: #fff;
+            box-shadow: 0 4px 12px rgba(255,0,127,0.3);
+        }
+
+        .color-picker {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 10px;
+            align-items: center;
+        }
+        .color-btn {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .color-btn:hover {
+            transform: scale(1.15);
+        }
+        .color-btn.active {
+            border-color: #2b2b36;
+            transform: scale(1.2);
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+        }
+        /* Custom Input Color Native */
+        .custom-color-wrapper {
+            width: 28px; height: 28px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid rgba(0,0,0,0.1);
+            display: flex;
+            cursor: pointer;
+        }
+        .custom-color-wrapper input[type="color"] {
+            width: 40px; height: 40px; 
+            border: none; margin: -5px; padding: 0;
+            cursor: pointer;
+        }
+
+        .leaflet-overlay-pane canvas {
+            pointer-events: none;
         }
     </style>
 </head>
 <body>
-    <main>
-        <div id="map-container">
-            <div class="floating-menu">
-                <!--Menu Izquierda-->
-                <div class="">
-                    <a>Info</a>
-                    <button class="zoom-btn" id="zoom-in">+</button>
-                    <button class="zoom-btn zoom-out-btn" id="zoom-out">-</button>
+    <div id="map-container">
+        <div class="floating-menu">
+            <div class="menu-left">
+                <div class="controls-row">
+                    <div class="brand">PIXEL WORLD</div>
+                    <button class="draw-toggle" id="draw-btn">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                        Pintar
+                    </button>
                 </div>
-                
-                <!--Menu Derecha-->
-                <div>
-                    <a href="/me">
-                        <img src="https://placehold.co/32x32/D4A373/8B0000?text=User">    
-                        My User
-                    </a>
-
+                <div class="color-picker" id="color-picker">
+                    <!-- Colors injected via JS -->
                 </div>
-                Boton 1
-
-                Boton 2
-
-                Login
-                User
-
-            
-                    &copy; 2025 Pixel World
             </div>
-            <div id='map'></div>   <!--style='position: absolute; top: 0; bottom: 0; left: 0; right: 0;'-->
-            <script>
-                var osmStyle = {
-                    "version": 8,
-                    "sources": {
-                        "osm": {
-                            "type": "raster",
-                            "tiles": [
-                                "https://tile.openstreetmap.org/{z}/{x}/{y}.png"
-                            ],
-                            "tileSize": 256,
-                            "attribution": "© OpenStreetMap contributors"
-                        }
-                    },
-                    "layers": [
-                        {
-                            "id": "osm",
-                            "type": "raster",
-                            "source": "osm"
-                        }
-                    ]
-                };
-                
-                var map = new maplibregl.Map({
-                    container: 'map',
-                    style: osmStyle,
-                    center: [0, 35],
-                    attributionControl: false,
-                    zoom: 3
-                });
-
-                document.getElementById('zoom-in').onclick = function() {
-                    map.zoomIn();
-                };
-                document.getElementById('zoom-out').onclick = function() {
-                    map.zoomOut();
-                };
-                </script>
+            
+            <div class="menu-right">
+                <a href="/me">
+                    <img src="https://placehold.co/28x28/D4A373/8B0000?text=U" style="border-radius:50%; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">    
+                    Profile
+                </a>
+                <button id="logout" style="color: #ff4d4d; border-radius: 8px; padding: 6px 12px; background: rgba(255,77,77,0.1);">Cerrar Sesión</button>
+            </div>
         </div>
-    </main>
+        <div id='map'></div>
+    </div>
+    <script>
+        const map = L.map('map', {
+            center: [40.4168, -3.7038], // Madrid
+            zoom: 13, // Acercamos el zoom default para que se note la grilla
+            minZoom: 3,
+            maxZoom: 18,
+            zoomControl: false // UI Minimalista
+        });
 
+        // Capa base de OpenStreetMap - Tema Claro Native
+        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        L.control.zoom({ position: 'bottomright' }).addTo(map);
+
+        // Estado y Colores
+        const colors = [
+            '#FF3366', '#FF9933', '#FFD633', '#33CC66', 
+            '#3399FF', '#9933FF', '#FFFFFF', '#000000'
+        ];
+        let selectedColor = colors[0];
+        let isDrawingMode = false;
+        let hoveredPixel = null; // Guardará {x, y} para la preview
+        
+        const picker = document.getElementById('color-picker');
+        colors.forEach(color => {
+            const btn = document.createElement('div');
+            btn.className = 'color-btn' + (color === selectedColor ? ' active' : '');
+            btn.style.backgroundColor = color;
+            btn.onclick = () => selectColor(btn, color);
+            picker.appendChild(btn);
+        });
+
+        // Native Color Picker Checker
+        const customColorWrapper = document.createElement('div');
+        customColorWrapper.className = 'custom-color-wrapper';
+        const colorInput = document.createElement('input');
+        colorInput.type = 'color';
+        colorInput.value = '#00CCCC';
+        colorInput.onchange = (e) => selectColor(customColorWrapper, e.target.value);
+        customColorWrapper.appendChild(colorInput);
+        picker.appendChild(customColorWrapper);
+
+        function selectColor(element, color) {
+            document.querySelectorAll('.color-btn').forEach(b => b.classList.remove('active'));
+            customColorWrapper.style.borderColor = 'rgba(0,0,0,0.1)';
+            
+            if(element.classList.contains('color-btn')) {
+                element.classList.add('active');
+            } else {
+                element.style.borderColor = '#2b2b36'; // Active state para el input native
+            }
+            selectedColor = color;
+        }
+
+        // Bloqueo de mapa (Draw Mode Toggle)
+        const drawBtn = document.getElementById('draw-btn');
+        drawBtn.onclick = () => {
+            isDrawingMode = !isDrawingMode;
+            if(isDrawingMode) {
+                drawBtn.classList.add('active');
+                map.dragging.disable();
+                map.touchZoom.disable();
+                map.doubleClickZoom.disable();
+                map.scrollWheelZoom.disable();
+                document.getElementById('map').style.cursor = 'crosshair';
+            } else {
+                drawBtn.classList.remove('active');
+                map.dragging.enable();
+                map.touchZoom.enable();
+                map.doubleClickZoom.enable();
+                map.scrollWheelZoom.enable();
+                document.getElementById('map').style.cursor = '';
+                hoveredPixel = null;
+                pixelLayer.redraw();
+            }
+        };
+
+        // Proyección EPSG:3857 (Web Mercator) asegura que cada celda sea un CUADRADO perfecto visualmente
+        // PIXEL_SIZE = metros virtuales proyectados de cada píxel
+        const PIXEL_SIZE = 100;
+
+        const PixelLayer = L.Layer.extend({
+            onAdd: function (map) {
+                // Añadimos la clase leaflet-zoom-animated para habilitar las transiciones CSS nativas del map
+                this._canvas = L.DomUtil.create('canvas', 'leaflet-pixel-layer leaflet-layer leaflet-zoom-animated');
+                this._canvas.style.pointerEvents = 'none';
+                this._canvas.style.transformOrigin = '0 0'; // Origen de transformación crítico para cálculo de offset
+                this._ctx = this._canvas.getContext('2d', { alpha: true });
+                
+                const pane = map.getPane('overlayPane');
+                pane.appendChild(this._canvas);
+                
+                map.on('moveend', this._update, this);
+                map.on('zoomend', this._update, this);
+                map.on('zoomanim', this._animateZoom, this);
+                map.on('resize', this._update, this);
+
+                this._update();
+            },
+            onRemove: function (map) {
+                L.DomUtil.remove(this._canvas);
+                map.off('moveend', this._update, this);
+                map.off('zoomend', this._update, this);
+                map.off('zoomanim', this._animateZoom, this);
+                map.off('resize', this._update, this);
+            },
+            _animateZoom: function (e) {
+                if (!this._bounds) return;
+                // Calculamos y aplicamos la escala temporal de zoom mediante transforms de alta eficiencia CSS
+                const scale = map.getZoomScale(e.zoom, map.getZoom());
+                const offset = map._latLngBoundsToNewLayerBounds(this._bounds, e.zoom, e.center).min;
+                L.DomUtil.setTransform(this._canvas, offset, scale);
+            },
+            _update: function () {
+                const size = map.getSize();
+                const bounds = map.getBounds();
+                this._bounds = bounds; // Guardamos registro geográfico para escalar en zoomanim
+                
+                const topLeft = map.latLngToLayerPoint(bounds.getNorthWest());
+
+                L.DomUtil.setPosition(this._canvas, topLeft);
+                this._canvas.width = size.x;
+                this._canvas.height = size.y;
+                
+                this.redraw();
+            },
+            redraw: function () {
+                if (!this._ctx) return;
+                const size = map.getSize();
+                this._ctx.clearRect(0, 0, size.x, size.y);
+
+                const mapTopLeft = map.latLngToLayerPoint(map.getBounds().getNorthWest());
+
+                // Función auxiliar para dibujar un bloque (x,y) de la matriz EPSG3857
+                const drawSquare = (xIndex, yIndex, colorStr) => {
+                    // Calculamos coords EPSG3857 de la celda
+                    // yIndex sube hacia el norte, así que Top = yIndex + 1, Bottom = yIndex
+                    const pTopLeftProj = L.point(xIndex * PIXEL_SIZE, (yIndex + 1) * PIXEL_SIZE);
+                    const pBotRightProj = L.point((xIndex + 1) * PIXEL_SIZE, yIndex * PIXEL_SIZE);
+
+                    // Desproyectar a LatLng geográfico
+                    const latLngTL = L.CRS.EPSG3857.unproject(pTopLeftProj);
+                    const latLngBR = L.CRS.EPSG3857.unproject(pBotRightProj);
+
+                    // Convertir a píxeles de pantalla
+                    const pointTopLeft = map.latLngToLayerPoint(latLngTL);
+                    const pointBottomRight = map.latLngToLayerPoint(latLngBR);
+
+                    const x = pointTopLeft.x - mapTopLeft.x;
+                    const y = pointTopLeft.y - mapTopLeft.y;
+                    const w = pointBottomRight.x - pointTopLeft.x;
+                    const h = pointBottomRight.y - pointTopLeft.y;
+
+                    if (w < 0.1 || h < 0.1 || x > size.x || y > size.y || x + w < 0 || y + h < 0) return;
+
+                    this._ctx.fillStyle = colorStr;
+                    // Dibujo con antialiasing buffer de +0.5 para no tener gaps
+                    this._ctx.fillRect(Math.floor(x), Math.floor(y), Math.ceil(w)+0.5, Math.ceil(h)+0.5);
+                };
+
+                // 1. Dibujar todos los colores registrados
+                for (const key in globalPixels) {
+                    const p = globalPixels[key];
+                    drawSquare(p.x, p.y, p.color);
+                }
+
+                // 2. Dibujar el fantasma hover si estamos en modo pintar
+                if (isDrawingMode && hoveredPixel) {
+                    drawSquare(hoveredPixel.x, hoveredPixel.y, 'rgba(128, 128, 128, 0.5)'); // Fantasma gris
+                }
+            }
+        });
+
+        // Initialize WebSockets
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}`);
+        const globalPixels = {};
+        
+        const pixelLayer = new PixelLayer();
+        map.addLayer(pixelLayer);
+
+        ws.onmessage = (event) => {
+            const msg = JSON.parse(event.data);
+            if (msg.type === 'INIT') {
+                msg.data.forEach(p => {
+                    globalPixels[`${p[0]},${p[1]}`] = { x: p[0], y: p[1], color: p[2] };
+                });
+                pixelLayer.redraw();
+            } else if (msg.type === 'UPDATE') {
+                const [x, y, color] = msg.data;
+                globalPixels[`${x},${y}`] = { x, y, color };
+                pixelLayer.redraw();
+            }
+        };
+
+        // Utilidad para extraer índice a partir de LatLng
+        function getCellFromLatLng(latlng) {
+            const projected = L.CRS.EPSG3857.project(latlng);
+            return {
+                x: Math.floor(projected.x / PIXEL_SIZE),
+                y: Math.floor(projected.y / PIXEL_SIZE)
+            };
+        }
+
+        // Interacciones de Pintado y Hover
+        function drawPixelAt(e) {
+            if (!isDrawingMode || ws.readyState !== WebSocket.OPEN) return;
+            
+            const cell = getCellFromLatLng(e.latlng);
+            const { x, y } = cell;
+            
+            const cacheKey = `${x},${y}`;
+            if (globalPixels[cacheKey] && globalPixels[cacheKey].color === selectedColor) return;
+
+            const payload = JSON.stringify([x, y, selectedColor, null]);
+            ws.send(payload);
+
+            globalPixels[cacheKey] = { x, y, color: selectedColor };
+            pixelLayer.redraw();
+        }
+
+        map.on('click', drawPixelAt);
+        map.on('mousemove', (e) => {
+            if(!isDrawingMode) return;
+            
+            // Permitir pintar arrastrando
+            if (e.originalEvent.buttons === 1) { 
+                drawPixelAt(e);
+            }
+            
+            // Actualizar fantasma hover
+            const cell = getCellFromLatLng(e.latlng);
+            if (!hoveredPixel || hoveredPixel.x !== cell.x || hoveredPixel.y !== cell.y) {
+                hoveredPixel = cell;
+                pixelLayer.redraw(); // Forzar render
+            }
+        });
+
+        // Limpiar fantasma al salir del mapa
+        map.on('mouseout', () => {
+            if (isDrawingMode) {
+                hoveredPixel = null;
+                pixelLayer.redraw();
+            }
+        });
+
+        // Logout
+        document.getElementById('logout').onclick = async () => {
+            await fetch('/logout', { method: 'POST' });
+            window.location.href = '/login';
+        };
+    </script>
 </body>
 </html>

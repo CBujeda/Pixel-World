@@ -40,12 +40,13 @@ function initTables() {
 
   if (config.db.type === 'sqlite') {
     dbInstance.serialize(() => {
+      // Configuraciones de rendimiento para evitar bloquear el Event Loop (alta concurrencia)
+      dbInstance.run('PRAGMA journal_mode = WAL;');
+      dbInstance.run('PRAGMA synchronous = NORMAL;');
+
       /**
        * Creamos la tabla de usuarios Usuario:
-       *  - id: Identificador único del usuario.
-       *  - username: Nombre de usuario único.
-       *  - password_hash: Contraseña del usuario en formato hash.
-       *  - created_at: Fecha de creación del usuario.
+       *  - is_banned: booleano para controles de admin.
        */
       dbInstance.run(`
           CREATE TABLE IF NOT EXISTS users (
@@ -55,10 +56,23 @@ function initTables() {
             email TEXT UNIQUE,
             rol TEXT DEFAULT 'user',
             password TEXT,
+            is_banned BOOLEAN DEFAULT 0,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP
         )
       `);
-      console.log('Tablas de SQLite creadas o ya existentes.');
+
+      /**
+       * Tabla para opciones globales del admin
+       */
+      dbInstance.run(`
+          CREATE TABLE IF NOT EXISTS settings (
+            key TEXT PRIMARY KEY,
+            value TEXT
+          )
+      `);
+      dbInstance.run(`INSERT OR IGNORE INTO settings (key, value) VALUES ('registration_enabled', '1')`);
+
+      console.log('Tablas de SQLite creadas (WAL activado). (Pixels ahora gestionados en chunks separados)');
     });
   } 
 }
